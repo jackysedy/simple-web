@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-web
+  namespace: default
+  labels:
+    app: simple-web
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: simple-web
+  template:
+    metadata:
+      labels:
+        app: simple-web
+    spec:
+      containers:
+      - name: simple-web
+        image: acrinterview.azurecr.io/simple-web
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: simple-web
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 800m
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: simple-web-service
+  namespace: default
+spec:
+  selector:
+    app: simple-web
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          serviceName: simple-web-service
+          servicePort: 80
+
+---
+
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: memory-cpu-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: simple-web
+  triggers:
+  - type: memory
+    metadata:
+      type: Utilization
+      value: "150"
+  - type: cpu
+    metadata:
+      type: Utilization
+      value: "150"
+  - type: cron
+    metadata:
+      timezone: Asia/Jerusalem
+      start: 0 8 * * *
+      end: 0 9 * * *
+      desiredReplicas: "3"
