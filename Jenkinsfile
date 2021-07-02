@@ -1,6 +1,6 @@
 pipeline {
     parameters{
-	checkbox(name: 'deploy')
+	choice(name: 'deploy')
     }	    
     agent any
     options {
