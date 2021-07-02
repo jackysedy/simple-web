@@ -15,7 +15,8 @@ pipeline {
         stage('Describe') {
 	        steps {
 		        script {	
-        		    sh '''
+        		    sh '''#!/bin/bash
+			        set -x
         		        az login --identity
         		        az aks get-credentials --admin --name jacky-interview-aks --resource-group devops-interview-rg
         		        if [ "$selection" == "deploy" ]; then
