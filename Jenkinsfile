@@ -19,13 +19,24 @@ pipeline {
 			        set -x
         		        az login --identity
         		        az aks get-credentials --admin --name jacky-interview-aks --resource-group devops-interview-rg
-        		        if [ "$selection" == "deploy" ]; then
+        		        kubectl get pods -n default | grep simple-web
+        		        exists=$(echo $?)
+        		        if [ "$selection" == "deploy" ];then
+        		            echo $exists
+        		            if [ "$exists" = 1 ]; then
                             		echo "deploying simple-web"
                             		helm install simple-web .
-                       		 else
+                            fi
+                       	fi
+                       	
+                       	if [ "$selection" == "destroy" ];then
+        		            echo $exists
+        		            if [ "$exists" = 0 ]; then
                             		echo "destroying simple-web"
-                           		 helm uninstall simple-web 
-                       		 fi
+                            		helm install simple-web 
+                            fi
+                       	fi
+
         		        
         		    '''	
 		        }
