@@ -1,4 +1,6 @@
 pipeline {
+    parameters{
+	checkbox(name: 'deploy')
     agent any
     options {
         timestamps()
