@@ -17,6 +17,7 @@ pipeline {
 		script {	
 		    sh 'printenv'
 		    sh 'helm'	
+		    sh 'ls'	
 		}
 	    }
 	}
