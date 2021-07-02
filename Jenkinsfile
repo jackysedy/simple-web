@@ -33,7 +33,7 @@ pipeline {
         		            echo $exists
         		            if [ "$exists" = 0 ]; then
                             		echo "destroying simple-web"
-                            		helm install simple-web 
+                            		helm uninstall simple-web 
                             fi
                        	fi
 
