@@ -1,6 +1,9 @@
 pipeline {
     parameters{
-	choice(name: 'deploy')
+	choice(
+	    choices: ['deploy','destroy'],	
+	    name: 'selection'
+        )		
     }	    
     agent any
     options {
