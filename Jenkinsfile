@@ -13,18 +13,27 @@ pipeline {
     }
     stages{
         stage('Describe') {
-	    steps {
-		script {	
-		    sh 'printenv'
-		    sh 'helm'	
-		    sh 'ls'	
-		}
-	    }
-	}
+	        steps {
+		        script {	
+        		    sh '''
+        		        az login --identity
+        		        az aks get-credentials --admin --name jacky-interview-aks --resource-group devops-interview-rg
+        		        if [ "$selection" == "deploy" ]; then
+                            		echo "deploying simple-web"
+                            		helm install simple-web .
+                       		 else
+                            		echo "destroying simple-web"
+                           		 helm uninstall simple-web 
+                       		 fi
+        		        
+        		    '''	
+		        }
+	        }
+	  }
     }	
     post {
-	always {
-	    cleanWs()
-	}
+	    always {
+	        cleanWs()
+	    }
    }
 }
