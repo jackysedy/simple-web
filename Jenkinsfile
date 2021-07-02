@@ -1,5 +1,5 @@
 pipeline {
-	agent master
+	agent any
 	options {
 		timestamps()
 		timeout(time: 2, unit: 'HOURS')
