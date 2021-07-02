@@ -32,8 +32,12 @@ pipeline {
                        	if [ "$selection" == "destroy" ];then
         		            echo $exists
         		            if [ "$exists" = 0 ]; then
-                            		echo "destroying simple-web"
-                            		helm uninstall simple-web 
+        		                    kubectl get pods -n default | grep simple-web | grep Terminating
+        		                    Terminating=$(echo $?)
+        		                    if [ "$Terminating" != 1 ]; then
+                            		    echo "destroying simple-web"
+                            		    helm uninstall simple-web 
+                            		fi
                             fi
                        	fi
 
