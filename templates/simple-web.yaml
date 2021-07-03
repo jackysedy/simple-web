@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simple-web
+  name: {{ .Values.simpleweb.name }}
   namespace: default
   labels:
-    app: simple-web
+    app: {{ .Values.simpleweb.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.simpleweb.minReplicas }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: simple-web
+      app: {{ .Values.simpleweb.name }}
   template:
     metadata:
       labels:
-        app: simple-web
+        app: {{ .Values.simpleweb.name }}
     spec:
       containers:
-      - name: simple-web
-        image: acrinterview.azurecr.io/simple-web
+      - name: {{ .Values.simpleweb.name }}
+        image: {{ .Values.global.registry }}/{{ .Values.simpleweb.name }}
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
-          name: simple-web
+        - containerPort: {{ .Values.simpleweb.port }}
+          name: {{ .Values.simpleweb.name }}
         resources:
           requests:
             cpu: 100m
@@ -34,16 +34,16 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: simple-web-service
+  name: {{ .Values.simpleweb.name }}-service
   namespace: default
 spec:
   selector:
-    app: simple-web
+    app: {{ .Values.simpleweb.name }}
   ports:
     - name: http
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: {{ .Values.simpleweb.port }}
+      targetPort: {{ .Values.simpleweb.port }}
 
 ---
 
@@ -61,8 +61,8 @@ spec:
       - path: /
         pathType: Prefix
         backend:
-          serviceName: simple-web-service
-          servicePort: 80
+          serviceName: {{ .Values.simpleweb.name }}-service
+          servicePort: {{ .Values.simpleweb.port }}
 
 ---
 
@@ -73,7 +73,7 @@ metadata:
   namespace: default
 spec:
   scaleTargetRef:
-    name: simple-web
+    name: {{ .Values.simpleweb.name }}
   triggers:
   - type: memory
     metadata:
