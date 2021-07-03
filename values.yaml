@@ -1,3 +1,5 @@
+global:
+  registry: acrinterview.azurecr.io
 simpleweb:
   name: simple-web
   minReplicas: 1
