@@ -2,3 +2,4 @@ simpleweb:
   name: simple-web
   minReplicas: 1
   version: 1.0.0
+  port: 80
